@@ -1,5 +1,5 @@
 // Backend API configuration
-export const API_BASE_URL = 'https://dedicate-yummy-vindicate.ngrok-free.dev';
+export const API_BASE_URL = 'http://localhost:8000';
 
 export const apiUrl = (path: string) => {
   const p = path.startsWith('/') ? path : `/${path}`;

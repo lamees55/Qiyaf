@@ -224,8 +224,6 @@ const UploadTab = () => {
     try {
       const result = await predictInspection([selectedFile]);
 
-      alert(JSON.stringify(result, null, 2));
-      console.log(result)
       // ===== DETECTIONS =====
 
       const resultsArray = (result as any)?.results;
@@ -295,13 +293,12 @@ const UploadTab = () => {
         const outputPath = outputResult?.pipeline_data?.output_path;
 
         if (outputPath) {
-          const fileName = outputPath.substring(outputPath.lastIndexOf('/') + 1);
-          setOutputUrl(
-            `https://dedicate-yummy-vindicate.ngrok-free.dev/ai_outputs/${fileName}`
+           const fileName = outputPath.substring(outputPath.lastIndexOf('/') + 1);
+         setOutputUrl(
+           `http://localhost:8000/ai_outputs/${fileName}`
           );
         }
       }
-      
 
       setHasResult(true);
     } catch (err) {
@@ -377,11 +374,23 @@ const UploadTab = () => {
           </div>
         ) : hasResult ? (
           <div className="relative rounded-xl overflow-hidden border border-white/10 mx-auto w-full max-w-[640px] bg-black">
+            {outputUrl && outputUrl.endsWith(".mp4") ? (
+              <video
+               controls
+               autoPlay
+               onError={(e) => console.log("VIDEO ERROR", e)}
+               onLoadedData={() => console.log("VIDEO LOADED")}
+               className="w-full h-[320px] object-contain"
+            >
+               <source src={outputUrl} type="video/mp4" />
+            </video>
+          ) : (
             <img
-              src={outputUrl || previewUrl || ''}
+              src={outputUrl || previewUrl || ""}
               alt="Analyzed solar panel"
               className="w-full h-[320px] object-contain"
             />
+          )}
           </div>
         ) : (
           <>
@@ -438,7 +447,7 @@ const UploadTab = () => {
             >
               {isAnalyzing
                 ? 'Analyzing...'
-                : 'Analyze File Test123'}
+                : 'Analyze File '}
             </Button>
           </>
         )}

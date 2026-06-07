@@ -36,6 +36,7 @@ async def add_ngrok_skip_header(request: Request, call_next):
 
 # --- 📸 مشاركة وعرض مجلد الصور المخرجة من الذكاء الاصطناعي (Static Serve) ---
 # يقوم بمشاركة المجلد الموجود داخل حاوية الدوكر ليكون متاحاً عبر الرابط مباشرة
+print("AI OUTPUTS EXISTS:", os.path.exists("/app/app/ai_outputs"))
 if os.path.exists("/app/app/ai_outputs"):
     app.mount("/ai_outputs", StaticFiles(directory="/app/app/ai_outputs"), name="ai_outputs")
 

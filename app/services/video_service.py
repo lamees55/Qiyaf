@@ -40,10 +40,12 @@ def create_video_writer(output_path: str, fps: float, width: int, height: int):
         output_fps,
         (width, height)
     )
+    
+    print("FPS:", output_fps)
+    print("SIZE:", width, height)
 
     if not writer.isOpened():
         raise ValueError(f"Could not create video writer: {output_path}")
-
     return writer
 
 

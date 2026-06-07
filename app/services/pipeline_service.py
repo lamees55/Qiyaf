@@ -129,6 +129,7 @@ def process_image_file(image_path: str):
 # ===================== VIDEO =====================
 
 def process_video_file(video_path: str):
+    print("INSIDE PROCESS_VIDEO_FILE")
     print("OPEN VIDEO:", video_path)
     cap = open_video(video_path)
     meta = get_video_metadata(cap)
@@ -226,7 +227,11 @@ def process_video_file(video_path: str):
                         panel_id=state["track_id"],
                     )
 
+        
+        print("FRAME SHAPE:", annotated.shape)
+        print("FRAME DTYPE:", annotated.dtype)
         writer.write(annotated)
+        print("FRAME WRITTEN")
 
     cap.release()
     writer.release()
