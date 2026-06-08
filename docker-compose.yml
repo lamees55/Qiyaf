@@ -1,12 +1,12 @@
 services:
   db:
     image: postgis/postgis:16-3.4
-    container_name: qiyaf_db
+    container_name: dbqiyaf
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password123
-      POSTGRES_DB: qiyaf_db
+      POSTGRES_DB: dbqiyaf
     ports:
       - "5435:5432"
     volumes:
@@ -32,7 +32,7 @@ services:
       - redis
     environment:
       # نستخدم أسماء الخدمات (db, redis) لأن الدوكر سيتولى الربط بينهم داخلياً
-      - DATABASE_URL=postgresql://postgres:password123@db:5432/qiyaf_db
+      - DATABASE_URL=postgresql://postgres:password123@db:5432/dbqiyaf
       - REDIS_URL=redis://redis:6379/0
       - POSTGRES_SERVER=db
       - CELERY_BROKER_URL=redis://redis:6379/0
