@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 from app.core.database import engine
-from app.db.models import User # للتأكد من وجود الجداول
+from app.db.models import User 
 
 router = APIRouter(prefix="/events", tags=["System Events"])
 
@@ -15,7 +15,7 @@ async def check_db():
     """فحص الاتصال بقاعدة البيانات"""
     try:
         with Session(engine) as session:
-            # نحاول نسوي طلب بسيط للتأكد من الاتصال
+            # Try making a simple request to verify the connection
             session.exec(select(User)).first()
         return {"status": "connected", "database": "PostgreSQL"}
     except Exception as e:

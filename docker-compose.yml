@@ -22,7 +22,7 @@ services:
   api:
     build: .
     container_name: qiyaf_api
-    # حذفنا network_mode: host واستخدمنا ports بدلاً منها
+# Removed network_mode: host and replaced it with ports mapping    
     ports:
       - "8000:8000"
     volumes:
@@ -31,7 +31,7 @@ services:
       - db
       - redis
     environment:
-      # نستخدم أسماء الخدمات (db, redis) لأن الدوكر سيتولى الربط بينهم داخلياً
+# Use service names (db, redis) as Docker handles internal network resolution      
       - DATABASE_URL=postgresql://postgres:password123@db:5432/dbqiyaf
       - REDIS_URL=redis://redis:6379/0
       - POSTGRES_SERVER=db

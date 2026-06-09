@@ -2,8 +2,6 @@ from sqlmodel import create_engine, Session, SQLModel
 from sqlalchemy import text
 from app.core.config import settings
 
-# 1. إنشاء محرك واحد فقط باستخدام الرابط القادم من Settings
-# settings.DATABASE_URL يحتوي بالفعل على اسم الحاوية 'db'
 engine = create_engine(settings.DATABASE_URL, echo=True)
 
 def init_db():

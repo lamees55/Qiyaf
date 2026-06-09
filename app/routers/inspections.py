@@ -10,7 +10,7 @@ from app.db import models
 # calling the AI pipeline function
 from app.services.pipeline_service import run_pipeline_file
 
-# إيقاف الـ OpenCL لمنع انهيار الدوكر مع OpenCV
+# Disable OpenCL to prevent Docker crashes with OpenCV
 os.environ["OPENCV_OPENCL_RUNTIME"] = "disabled"
 
 router = APIRouter(prefix="/inspections", tags=["inspections"])
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/inspections", tags=["inspections"])
 @router.post("/predict")
 async def predict(files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
     
-    # 1. إنشاء "عملية فحص" واحدة في قاعدة البيانات (شغلك كـ Partner)
+    # 1. Create a single "Inspection Process" in the database (Your task as a Partner)
     new_inspection = models.Inspection(
         title=f"فحص آلي لعدد {len(files)} ملف/ملفات",
         status="completed"
@@ -30,34 +30,31 @@ async def predict(files: List[UploadFile] = File(...), db: Session = Depends(get
     all_results = []
     total_panels = 0
 
-    # 2. المرور على كل الملفات المرفوعة
+    # 2. Iterate through all the uploaded files
     for file in files:
-        # استخراج امتداد الملف (مثل .jpg أو .mp4)
         ext = os.path.splitext(file.filename)[1].lower()
         if not ext:
-            ext = ".jpg" # امتداد افتراضي لو كان مخفي
+            ext = ".jpg" 
             
-        # إنشاء ملف مؤقت في السيرفر لحفظ الملف المرفوع
+        
         with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as temp_file:
-            # قراءة الملف من المتصفح وحفظه في السيرفر
             temp_file.write(await file.read())
             temp_file_path = temp_file.name
 
         try:
-            # 3. إرسال المسار لدالة الذكاء الاصطناعي الشاملة (كود فريق الـ AI)
-            # هذه الدالة سترجع قاموس يحتوي على detections وغيرها
+            # 3. Send the path to the comprehensive AI function (AI team's code)
+            # This function will return a dictionary containing detections and other details
             pipeline_result = run_pipeline_file(temp_file_path)
             
-            # استخراج النتائج من القاموس الراجع
             results = pipeline_result.get("detections", [])
             
             all_results.append({
                 "filename": file.filename,
-                "pipeline_data": pipeline_result # حفظ كامل مخرجات فريق الـ AI للتوثيق
+                "pipeline_data": pipeline_result 
             })
             total_panels += len(results)
 
-            # 4. حفظ النتائج التفصيلية لكل لوح (Detections) في قاعدة البيانات
+            # 4. Save the detailed results for each panel (Detections) in the database
             for res in results:
                 new_result = models.DetectionResult(
                     inspection_id=new_inspection.id,
@@ -68,19 +65,18 @@ async def predict(files: List[UploadFile] = File(...), db: Session = Depends(get
                 db.add(new_result)
                 
         except Exception as e:
-            # في حال حدوث خطأ في المعالجة، نطبعه في التيرمينال ونكمل للملف اللي بعده
+            # If a processing error occurs, print it in the terminal and proceed to the next file
             print(f"Error processing file {file.filename}: {str(e)}")
             continue
             
         finally:
-            # 5. تنظيف السيرفر: حذف الملف المؤقت لتوفير المساحة
+            # 5. Server cleanup: Delete the temporary file to free up space
             if os.path.exists(temp_file_path):
                 os.remove(temp_file_path)
 
-    # حفظ جميع الداتا في الـ PostgreSQL
     db.commit()
 
-    # 6. الرد النهائي للمتصفح
+    # 6. Final response to the browser
     return {
         "status": "success",
         "inspection_id": new_inspection.id,

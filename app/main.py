@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles # استيراد مكتبة الملفات الثابتة لتشغيل مسار الصور
+from fastapi.staticfiles import StaticFiles 
 import os
 
 from app.routers import auth, inspections, upload, prediction, inference
@@ -8,7 +8,6 @@ from app.core.database import engine
 from app.db import models
 from app.core.config import settings
 
-# إنشاء الجداول
 models.SQLModel.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -17,7 +16,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# --- إضافة إعدادات الـ CORS للربط مع الفرونت آند ---
+# --- Add CORS configurations for frontend integration ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -26,21 +25,21 @@ app.add_middleware(
     allow_headers=["*"], 
 )
 
-# --- 🚀 الـ Middleware السحري لتخطي شاشة تحذير ngrok وتمرير الصور فوراً ---
+# --- Middleware to bypass ngrok warning screen and allow direct image loading ---
 @app.middleware("http")
 async def add_ngrok_skip_header(request: Request, call_next):
     response: Response = await call_next(request)
-    # إضافة الهيدر الذي يمنع ngrok من حجب الصور والطلبات عن المتصفح
+    # Add the header that prevents ngrok from blocking images and requests from the browser
     response.headers["ngrok-skip-browser-warning"] = "true"
     return response
 
-# --- 📸 مشاركة وعرض مجلد الصور المخرجة من الذكاء الاصطناعي (Static Serve) ---
-# يقوم بمشاركة المجلد الموجود داخل حاوية الدوكر ليكون متاحاً عبر الرابط مباشرة
+# --- Serve the static directory containing the AI output images ---
+# Serves the directory inside the Docker container to be accessible directly via URL
 print("AI OUTPUTS EXISTS:", os.path.exists("/app/app/ai_outputs"))
 if os.path.exists("/app/app/ai_outputs"):
     app.mount("/ai_outputs", StaticFiles(directory="/app/app/ai_outputs"), name="ai_outputs")
 
-# --- ربط المسارات (Routers) ---
+# --- Include Routers ---
 app.include_router(auth.router)
 app.include_router(inspections.router)
 app.include_router(inference.router)

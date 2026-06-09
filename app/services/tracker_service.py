@@ -21,11 +21,11 @@ def smooth_box(prev_box, new_box, alpha=BOX_SMOOTH_ALPHA):
 
 class TrackMemory:
     def __init__(self):
-        self.votes = defaultdict(list)        # لكل track_id: [(label, conf)]
-        self.smooth_boxes = {}                # box بعد smoothing
-        self.last_boxes = {}                  # آخر box
-        self.hits = defaultdict(int)          # كم فريم ظهر
-        self.last_seen = {}                   # آخر فريم ظهر فيه
+        self.votes = defaultdict(list)        
+        self.smooth_boxes = {}                
+        self.last_boxes = {}                  
+        self.hits = defaultdict(int)          
+        self.last_seen = {}                   
 
     def update_track(self, track_id, box, label, confidence, frame_number):
         self.votes[track_id].append((label, confidence))

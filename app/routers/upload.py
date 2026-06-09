@@ -4,19 +4,19 @@ import os
 
 router = APIRouter(prefix="/storage", tags=["File Storage"])
 
-# تحديد مجلد الحفظ
+# Define the upload/save directory
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @router.post("/upload-file")
 async def upload_image(file: UploadFile = File(...)):
-    # التحقق من نوع الملف (اختياري لكنه احترافي)
+    # Ensure the file is of the correct type (optional but professional)
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Only image files are allowed")
 
     file_path = os.path.join(UPLOAD_DIR, file.filename)
     
-    # حفظ الملف فعلياً في المجلد
+    # Save the file in the directory
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
         

@@ -4,7 +4,6 @@ from jose import jwt
 from passlib.context import CryptContext
 from app.core.config import Settings
 
-# إعداد تشفير كلمة المرور باستخدام bcrypt
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 ALGORITHM = "HS256"

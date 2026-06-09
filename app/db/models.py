@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import Column,Integer, String, Float, ForeignKey, DateTime, JSON, func
 from sqlmodel import SQLModel, Field, Relationship 
 from typing import List
-# بدال Base، نستخدم SQLModel ونضيف (table=True) لكل كلاس يمثل جدول
+# Instead of Base, we use SQLModel and add (table=True) for each class that represents a table
 class User(SQLModel, table=True):
     __tablename__ = "users"
     id: int = Field(default=None , primary_key=True, index=True)
@@ -16,7 +16,6 @@ class Inspection(SQLModel, table=True):
     title: str = Field() 
     status: str = Field(default="pending")
     created_at: datetime = Field(sa_column=Column(DateTime(timezone=True), server_default=func.now()))
-    # علاقة مع النتائج
     results: List["DetectionResult"] = Relationship(back_populates="inspection")
 class DetectionResult(SQLModel, table=True):
     __tablename__ = "detection_results"

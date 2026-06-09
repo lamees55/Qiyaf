@@ -5,17 +5,15 @@ from datetime import datetime
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
-# نموذج بسيط للتنبيه (عشان يشتغل الـ API الحين)
 class Notification(BaseModel):
     id: int
     message: str
     timestamp: datetime
     is_read: bool = False
 
-# بيانات وهمية مؤقتاً لين نربطها بقاعدة البيانات
 fake_notifications = [
-    Notification(id=1, message="Starting UAV flight... 🛰️", timestamp=datetime.now(), is_read=True),
-    Notification(id=2, message="Defect detected in Panel #12! ⚠️", timestamp=datetime.now(), is_read=False)
+    Notification(id=1, message="Starting UAV flight... ", timestamp=datetime.now(), is_read=True),
+    Notification(id=2, message="Defect detected in Panel #12! ", timestamp=datetime.now(), is_read=False)
 ]
 
 @router.get("/", response_model=List[Notification])

@@ -52,7 +52,7 @@ async def analyze_chunk(
         return {
             "status": "success",
 
-            #  metadata يرجع للفرونت
+            # Returns metadata to the frontend
             "metadata": {
                 "drone_id": drone_id,
                 "mission_id": mission_id,
@@ -66,7 +66,7 @@ async def analyze_chunk(
                 "topic_name": topic_name,
             },
 
-            #  نتائج
+            # Returns AI results to the frontend
             "ai_result": pipeline_result,
         }
 
